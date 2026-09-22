@@ -4,12 +4,13 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": ["dist"],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json --watch"
   },
   "dependencies": {
-    "@dashwire/core": "workspace:*",
+    "@dashwire/core": "^0.1.0",
     "socket.io-client": "^4.8.0"
   },
   "devDependencies": {

@@ -4,11 +4,12 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": ["dist"],
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0"
   },
   "dependencies": {
-    "@dashwire/core": "workspace:*"
+    "@dashwire/core": "^0.1.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.0",

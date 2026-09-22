@@ -1,17 +1,18 @@
 {
   "name": "@dashwire/server",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "private": true,
+  "files": ["dist"],
+  "private": false,
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js"
   },
   "dependencies": {
-    "@dashwire/core": "workspace:*",
+    "@dashwire/core": "^0.1.0",
     "better-sqlite3": "^11.3.0",
     "drizzle-orm": "^0.33.0",
     "fastify": "^4.28.1",
