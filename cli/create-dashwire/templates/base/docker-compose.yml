@@ -1,0 +1,16 @@
+services:
+  dashwire:
+    build: .
+    container_name: dashwire-central
+    restart: always
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - DASHWIRE_DB_PATH=/app/data/dashwire.db
+      - JWT_SECRET=change-this-super-secret-key-in-production
+    volumes:
+      - dashwire_data:/app/data
+
+volumes:
+  dashwire_data:

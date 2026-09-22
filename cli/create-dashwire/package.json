@@ -1,0 +1,14 @@
+{
+  "name": "create-dashwire",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "create-dashwire": "./bin.js"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.0"
+  }
+}

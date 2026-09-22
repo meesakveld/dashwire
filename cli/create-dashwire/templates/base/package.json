@@ -1,0 +1,26 @@
+{
+  "name": "dashwire-project",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/server.js",
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "@fastify/static": "^7.0.4",
+    "better-sqlite3": "^11.3.0",
+    "fastify": "^4.28.1",
+    "jsonwebtoken": "^9.0.3",
+    "nanoid": "^5.0.7",
+    "socket.io": "^4.8.0",
+    "drizzle-orm": "^0.33.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.11",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^22.7.0",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.0"
+  }
+}

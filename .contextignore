@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+venv/
+.venv/
+
+# Build output
+.next/
+dist/
+build/
+
+# Python cache
+__pycache__/
+
+# IDE
+.idea/
+.vscode/
+
+# Generated files
+coverage/
+.cache/
+.tmp/
+
+# Secrets
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Custom
+cache/

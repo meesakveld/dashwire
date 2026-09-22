@@ -1,0 +1,30 @@
+{
+  "name": "@dashwire/server",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "private": true,
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@dashwire/core": "workspace:*",
+    "better-sqlite3": "^11.3.0",
+    "drizzle-orm": "^0.33.0",
+    "fastify": "^4.28.1",
+    "jsonwebtoken": "^9.0.3",
+    "nanoid": "^5.0.7",
+    "socket.io": "^4.8.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.11",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^22.7.0",
+    "drizzle-kit": "^0.24.2",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.0"
+  }
+}
