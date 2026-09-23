@@ -1,15 +1,23 @@
 {
   "name": "@dashwire/react-ui",
-  "version": "0.3.0",
+  "version": "0.5.0",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist", "src/react-ui.css"],
+  "files": [
+    "dist",
+    "src/react-ui.css"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/meesakveld/dashwire.git",
+    "directory": "packages/react-ui"
+  },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0"
   },
   "dependencies": {
-    "@dashwire/core": "^0.1.0"
+    "@dashwire/core": "^0.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.0",
