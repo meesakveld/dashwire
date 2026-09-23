@@ -1,18 +1,32 @@
+import { useState, useEffect } from "react";
 import type { NumberCapability } from "@dashwire/core";
 
 export function NumberControl({ capability, onCommand }: { capability: NumberCapability; onCommand: (v: number) => void }) {
+  const parseNum = (val: unknown, fallback: number) => {
+    const parsed = Number(val);
+    return !isNaN(parsed) ? parsed : fallback;
+  };
+
+  const initialValue = parseNum(capability.value, parseNum(capability.min, 0));
+  const [val, setVal] = useState<number>(initialValue);
+
+  useEffect(() => {
+    setVal(parseNum(capability.value, parseNum(capability.min, 0)));
+  }, [capability.value, capability.min]);
+
   return (
-    <label className="dw-control dw-number">
-      <span>{capability.label}{capability.unit ? ` (${capability.unit})` : ""}</span>
+    <div className="dw-control dw-number">
       <input
         type="number"
-        value={capability.value}
+        value={val}
         min={capability.min}
         max={capability.max}
         step={capability.step ?? 1}
         disabled={!capability.writable}
-        onChange={(e) => onCommand(Number(e.target.value))}
+        onChange={(e) => setVal(Number(e.target.value))}
+        onBlur={(e) => onCommand(Number(e.target.value))}
       />
-    </label>
+      {capability.unit && <span>{capability.unit}</span>}
+    </div>
   );
 }
