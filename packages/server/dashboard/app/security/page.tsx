@@ -6,6 +6,7 @@ interface ProjectTokenRecord {
   id: string;
   projectId: string;
   token: string;
+  label?: string;
   active: boolean;
   createdAt: string;
 }
@@ -112,7 +113,9 @@ export default function GlobalSecurityPage() {
               <div key={t.id} className="dw-token-row">
                 <div style={{ flex: 1, marginRight: "1rem" }}>
                   <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", marginBottom: "0.35rem" }}>
-                    <span style={{ fontWeight: "bold", fontSize: "0.9rem", color: "#0f172a" }}>Token ID: {t.id}</span>
+                    <span style={{ fontWeight: "bold", fontSize: "0.9rem", color: "#0f172a" }}>
+                      {t.label || "Universele Sleutel"} <span style={{ color: "#64748b", fontWeight: "normal", fontSize: "0.8rem" }}>(ID: {t.id})</span>
+                    </span>
                     <span className={`dw-badge ${t.active ? "dw-badge--active" : "dw-badge--inactive"}`}>
                       {t.active ? "Actief" : "Inactief"}
                     </span>

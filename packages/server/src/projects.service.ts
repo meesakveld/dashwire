@@ -100,15 +100,16 @@ export function createTokenForProject(label?: string) {
   const token = jwt.sign({ name: tokenName, scope: "dashwire-access" }, JWT_SECRET);
   const id = randomBytes(8).toString("hex");
   const now = new Date().toISOString();
-
+  
   db.insert(projectTokens).values({
     id,
-    projectId: "universal", // Niet gekoppeld aan 1 specifiek project
+    projectId: "universal",
+    label: tokenName,
     token,
     active: true,
     createdAt: now,
   }).run();
-
+  
   return token;
 }
 

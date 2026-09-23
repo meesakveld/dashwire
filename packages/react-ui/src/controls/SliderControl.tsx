@@ -7,8 +7,6 @@ export function SliderControl({ capability, onCommand }: { capability: SliderCap
     return !isNaN(parsed) ? parsed : fallback;
   };
 
-  console.log("capability", capability)
-
   const initialValue = parseNum(capability.value, parseNum(capability.min, 0));
   const [val, setVal] = useState<number>(initialValue);
 

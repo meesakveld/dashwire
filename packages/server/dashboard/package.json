@@ -8,8 +8,8 @@
     "start": "next start"
   },
   "dependencies": {
-    "@dashwire/core": "workspace:*",
-    "@dashwire/react-ui": "workspace:*",
+    "@dashwire/core": "^0.1.0",
+    "@dashwire/react-ui": "^0.3.0",
     "next": "^14.2.0",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",

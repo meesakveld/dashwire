@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { getDashboardSocket } from "../../../lib/dashwireSocket";
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { getDashboardSocket } from "../../lib/dashwireSocket";
 import type { DashboardStructure } from "@dashwire/core";
 import { Dashboard } from "@dashwire/react-ui";
 
@@ -22,14 +22,19 @@ interface LogEntry {
   source?: string;
 }
 
-export default function ProjectDetailPage() {
-  const params = useParams();
-  const projectId = params.id as string;
+function ProjectDetailContent() {
+  const searchParams = useSearchParams();
+  const projectId = searchParams.get("id");
+  
   const [project, setProject] = useState<ProjectDetail | null>(null);
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!projectId) {
+      setLoading(false);
+      return;
+    }
     const serverUrl = process.env.NEXT_PUBLIC_DASHWIRE_SERVER_URL ?? "http://localhost:4000";
 
     fetch(`${serverUrl}/api/projects/${projectId}`)
@@ -101,16 +106,20 @@ export default function ProjectDetailPage() {
   }, [projectId]);
 
   const handleCommand = (path: string, value: unknown) => {
-    if (project?.status === "offline") return;
+    if (!projectId || project?.status === "offline") return;
     const socket = getDashboardSocket();
     socket.emit("capability:command", { projectId, path, value });
   };
 
   const handleExecute = (path: string) => {
-    if (project?.status === "offline") return;
+    if (!projectId || project?.status === "offline") return;
     const socket = getDashboardSocket();
     socket.emit("action:execute", { projectId, path });
   };
+
+  if (!projectId) {
+    return <div style={{ textAlign: "center", padding: "3rem", color: "#64748b" }}>Geen project ID opgegeven in de URL.</div>;
+  }
 
   if (loading) return <div style={{ textAlign: "center", padding: "3rem", color: "#64748b" }}>Details laden...</div>;
   if (!project) return <div style={{ textAlign: "center", padding: "3rem", color: "#ef4444" }}>Project niet gevonden.</div>;
@@ -127,5 +136,13 @@ export default function ProjectDetailPage() {
         onExecute={handleExecute}
       />
     </div>
+  );
+}
+
+export default function ProjectPage() {
+  return (
+    <Suspense fallback={<div style={{ textAlign: "center", padding: "3rem", color: "#64748b" }}>Laden...</div>}>
+      <ProjectDetailContent />
+    </Suspense>
   );
 }

@@ -1,0 +1,1 @@
+ALTER TABLE `project_tokens` ADD `label` text DEFAULT 'Universele Sleutel' NOT NULL;

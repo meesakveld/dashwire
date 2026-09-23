@@ -8,6 +8,6 @@
     "start": "node src/server.js"
   },
   "dependencies": {
-    "@dashwire/server": "^0.2.0"
+    "@dashwire/server": "^0.22.0"
   }
 }

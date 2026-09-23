@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1790156994312,
+      "tag": "0000_omniscient_marvel_zombies",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1790163488139,
+      "tag": "0001_daily_wasp",
+      "breakpoints": true
+    }
+  ]
+}

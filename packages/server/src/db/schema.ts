@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, integer, primaryKey } from "drizzle-orm/sqlite-core";
 
 export const projects = sqliteTable("projects", {
   id: text("id").primaryKey(),
@@ -13,18 +13,20 @@ export const projects = sqliteTable("projects", {
 export const projectTokens = sqliteTable("project_tokens", {
   id: text("id").primaryKey(),
   projectId: text("project_id").notNull(),
+  label: text("label").notNull().default("Universele Sleutel"),
   token: text("token").notNull().unique(),
   active: integer("active", { mode: "boolean" }).notNull().default(true),
   createdAt: text("created_at").notNull(),
 });
 
 export const capabilityState = sqliteTable("capability_state", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
   projectId: text("project_id").notNull(),
   capabilityPath: text("capability_path").notNull(),
   valueJson: text("value_json").notNull(),
   updatedAt: text("updated_at").notNull(),
-});
+}, (table) => ({
+  pk: primaryKey({ columns: [table.projectId, table.capabilityPath] }),
+}));
 
 export const overviewConfig = sqliteTable("overview_config", {
   id: integer("id").primaryKey({ autoIncrement: true }),

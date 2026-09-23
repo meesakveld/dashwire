@@ -2,10 +2,11 @@ import type { FastifyInstance } from "fastify";
 import type { Server as SocketServer } from "socket.io";
 import { registerProject, listProjects, getProject, listAllTokens, createTokenForProject, setTokenActiveStatus, deleteToken } from "../projects.service.js";
 import type { DashboardStructure } from "@dashwire/core";
-import { logs } from "../db/schema.js";
+import { capabilityState, logs, overviewConfig, projects, projectTokens } from "../db/schema.js";
 import { desc } from "drizzle-orm/sql/expressions/select";
 import { eq } from "drizzle-orm/sql/expressions/conditions";
 import { db } from "../db/client.js";
+import { verifyAuthToken } from "../auth.service.js";
 
 export function projectRoutes(app: FastifyInstance, io: SocketServer) {
   app.post<{ Params: { id: string }; Body: { projectName: string; structure: DashboardStructure } }>(
@@ -90,4 +91,29 @@ export function projectRoutes(app: FastifyInstance, io: SocketServer) {
       return reply.send(projectLogs.reverse());
     }
   );
+
+  app.delete<{ Params: { id: string } }>("/api/projects/:id", async (req, reply) => {
+    const authHeader = req.headers.authorization;
+    const token = authHeader?.startsWith("Bearer ") ? authHeader.substring(7) : "";
+    const verified = verifyAuthToken(token);
+    if (!verified || verified.role !== "admin") {
+      return reply.code(403).send({ error: "Toegang geweigerd. Alleen voor admins." });
+    }
+
+    const { id: projectId } = req.params;
+    const existing = getProject(projectId);
+    if (!existing) {
+      return reply.code(404).send({ error: "Project niet gevonden" });
+    }
+
+    db.delete(capabilityState).where(eq(capabilityState.projectId, projectId)).run();
+    db.delete(overviewConfig).where(eq(overviewConfig.projectId, projectId)).run();
+    db.delete(logs).where(eq(logs.projectId, projectId)).run();
+    db.delete(projectTokens).where(eq(projectTokens.projectId, projectId)).run();
+    db.delete(projects).where(eq(projects.id, projectId)).run();
+
+    io.of("/dashboard").emit("project:deleted", { projectId });
+
+    return reply.send({ success: true });
+  });
 }

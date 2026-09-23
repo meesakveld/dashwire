@@ -28,7 +28,8 @@ export function createAdminUser(username: string, password: string) {
   if (hasAnyAdmin()) {
     throw new Error("Admin account bestaat al.");
   }
-  return createUserRecord(username, password, "admin");
+  const user = createUserRecord(username, password, "admin");
+  return jwt.sign({ id: user.id, username: user.username, role: user.role }, JWT_SECRET, { expiresIn: "7d" });
 }
 
 export function createUserRecord(username: string, password: string, role: "admin" | "user" = "user") {
@@ -44,7 +45,7 @@ export function createUserRecord(username: string, password: string, role: "admi
     createdAt: now,
   }).run();
 
-  return jwt.sign({ id, username, role }, JWT_SECRET, { expiresIn: "7d" });
+  return { id, username, role, createdAt: now };
 }
 
 export function authenticateUser(username: string, password: string) {
