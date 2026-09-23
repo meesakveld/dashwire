@@ -156,7 +156,36 @@ export class Dashboard {
     this.socket?.emit("state:update", { path, value });
   }
 
+  /**
+   * Registreert het dashboard bij de server en opent de socket-verbinding.
+   *
+   * In plaats van te stoppen zodra de server (nog) niet bereikbaar is, blijft
+   * dit intern proberen met exponentiële backoff (max. 30s tussen pogingen)
+   * totdat de registratie lukt. Zodra de socket eenmaal is aangemaakt, regelt
+   * socket.io-client zelf het automatisch herverbinden als de verbinding
+   * later wegvalt (reconnection: true, reconnectionAttempts: Infinity), dus
+   * dat hoeft hier niet apart afgehandeld te worden.
+   */
   async connect(): Promise<void> {
+    let attempt = 0;
+    while (true) {
+      try {
+        await this.registerAndOpenSocket();
+        return;
+      } catch (err) {
+        attempt += 1;
+        const delayMs = Math.min(30000, 1000 * 2 ** Math.min(attempt, 5));
+        console.warn(
+          `[dashwire] Could not reach server (attempt ${attempt}): ${
+            (err as Error).message
+          }. Retrying in ${Math.round(delayMs / 1000)}s...`
+        );
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+      }
+    }
+  }
+
+  private async registerAndOpenSocket(): Promise<void> {
     const res = await fetch(`${this.config.serverUrl}/api/projects/${this.config.id}/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json", ...(this.config.token ? { "Authorization": `Bearer ${this.config.token}` } : {}) },
@@ -174,6 +203,10 @@ export class Dashboard {
     const token = this.config.token || body.token || "";
     this.config.token = token;
 
+    // Ruim een socket van een eerdere mislukte poging netjes op voordat we een nieuwe openen.
+    this.socket?.removeAllListeners();
+    this.socket?.disconnect();
+
     this.socket = io(`${this.config.serverUrl}/sdk`, {
       auth: { token },
       query: { projectId: this.config.id },
@@ -181,14 +214,33 @@ export class Dashboard {
     });
 
     this.socket.on("connect", () => {
+      const wasConnected = this.connected;
       this.connected = true;
+      if (!wasConnected) {
+        console.log("[dashwire] Connected to server.");
+      }
       this.socket!.emit("state:sync", { state: this.currentState() });
     });
-    this.socket.on("disconnect", () => {
+    this.socket.on("disconnect", (reason) => {
       this.connected = false;
+      console.warn(`[dashwire] Lost connection to server (${reason}). Attempting to reconnect...`);
+      // Geen verdere actie nodig: socket.io-client blijft zelf op de
+      // achtergrond herverbinden zodra de server weer bereikbaar is
+      // (zie de "reconnect_attempt" / "reconnect" logging hieronder).
     });
     this.socket.on("capability:command", ({ path, value }) => this.dispatch(path, value));
     this.socket.on("action:execute", ({ path }) => this.dispatch(path, undefined));
+
+    // Deze events zitten op de Manager (socket.io), niet op de socket zelf.
+    this.socket.io.on("reconnect_attempt", (attempt) => {
+      console.log(`[dashwire] Reconnecting to server... (attempt ${attempt})`);
+    });
+    this.socket.io.on("reconnect", (attempt) => {
+      console.log(`[dashwire] Reconnected to server after ${attempt} attempt(s).`);
+    });
+    this.socket.io.on("reconnect_error", (err) => {
+      console.warn(`[dashwire] Reconnect attempt failed: ${(err as Error).message}`);
+    });
   }
 
   isConnected(): boolean {
