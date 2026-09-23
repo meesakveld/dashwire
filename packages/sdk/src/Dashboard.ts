@@ -26,7 +26,7 @@ export interface DashwireConfig {
 
 interface ToggleOptions { label: string; value: boolean; onChange?: (value: boolean) => void; }
 interface ColorOptions { label: string; value: string; onChange?: (value: string) => void; }
-interface NumberOptions { label: string; value: number; min?: number; max?: number; step?: number; unit?: string; onChange?: (value: number) => void; }
+interface NumberOptions { label: string; value: number; min?: number; max?: number; writable?: boolean; step?: number; unit?: string; onChange?: (value: number) => void; }
 interface SliderOptions { label: string; value: number; min: number; max: number; step?: number; onChange?: (value: number) => void; }
 interface SelectOptions { label: string; value: string; options: { label: string; value: string }[]; onChange?: (value: string) => void; }
 interface ActionOptions { label: string; confirm?: boolean; onExecute?: () => void; }
@@ -50,7 +50,8 @@ export class SectionBuilder {
   }
 
   number(key: string, opts: NumberOptions): CapabilityHandle<number> {
-    return this.dashboard.registerIn<number>(this.sectionSlug, { key, type: "number", label: opts.label, value: opts.value, min: opts.min, max: opts.max, step: opts.step, unit: opts.unit, writable: true }, opts.onChange as OnChangeHandler);
+    const isWritable = opts.writable ?? (opts.onChange !== undefined);
+    return this.dashboard.registerIn<number>(this.sectionSlug, { key, type: "number", label: opts.label, value: opts.value, min: opts.min, max: opts.max, step: opts.step, unit: opts.unit, writable: isWritable }, opts.onChange as OnChangeHandler);
   }
 
   slider(key: string, opts: SliderOptions): CapabilityHandle<number> {
@@ -203,7 +204,6 @@ export class Dashboard {
     const token = this.config.token || body.token || "";
     this.config.token = token;
 
-    // Ruim een socket van een eerdere mislukte poging netjes op voordat we een nieuwe openen.
     this.socket?.removeAllListeners();
     this.socket?.disconnect();
 

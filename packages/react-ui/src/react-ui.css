@@ -128,11 +128,25 @@ input[type="range"], input[type="checkbox"] {
   cursor: text;
 }
 
-.dw-number span, 
+.dw-control.dw-number .number {
+  font-size: 0.85rem;
+  font-family: monospace;
+  font-weight: 600;
+  width: 70px;
+  text-align: right;
+  padding: 0.25rem 0.5rem;
+}
+
 .dw-slider span {
   font-size: 0.85rem;
   font-family: monospace;
   color: #64748b;
+}
+
+.dw-number span {
+  font-size: 0.85rem;
+  font-family: monospace;
+  color: #1e293b;
 }
 
 button.dw-action-btn {

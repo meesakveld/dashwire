@@ -16,16 +16,19 @@ export function NumberControl({ capability, onCommand }: { capability: NumberCap
 
   return (
     <div className="dw-control dw-number">
-      <input
-        type="number"
-        value={val}
-        min={capability.min}
-        max={capability.max}
-        step={capability.step ?? 1}
-        disabled={!capability.writable}
-        onChange={(e) => setVal(Number(e.target.value))}
-        onBlur={(e) => onCommand(Number(e.target.value))}
-      />
+      {capability.writable ? (
+        <input
+          type="number"
+          value={val}
+          min={capability.min}
+          max={capability.max}
+          step={capability.step ?? 1}
+          onChange={(e) => setVal(Number(e.target.value))}
+          onBlur={(e) => onCommand(Number(e.target.value))}
+        />
+      ) : (
+        <span className="number">{val}</span>
+      )}
       {capability.unit && <span>{capability.unit}</span>}
     </div>
   );

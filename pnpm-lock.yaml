@@ -34,27 +34,11 @@ importers:
         specifier: ^5.6.0
         version: 5.9.3
 
-  packages/js-sdk:
-    dependencies:
-      '@dashwire/core':
-        specifier: ^0.1.0
-        version: 0.1.0
-      socket.io-client:
-        specifier: ^4.8.0
-        version: 4.8.3
-    devDependencies:
-      '@types/node':
-        specifier: ^22.7.0
-        version: 22.20.4
-      typescript:
-        specifier: ^5.6.0
-        version: 5.9.3
-
   packages/react-ui:
     dependencies:
       '@dashwire/core':
-        specifier: ^0.1.0
-        version: 0.1.0
+        specifier: ^0.2.0
+        version: 0.2.0
       react:
         specifier: ^18.0.0 || ^19.0.0
         version: 18.3.1
@@ -66,11 +50,27 @@ importers:
         specifier: ^5.6.0
         version: 5.9.3
 
+  packages/sdk:
+    dependencies:
+      '@dashwire/core':
+        specifier: ^0.2.0
+        version: 0.2.0
+      socket.io-client:
+        specifier: ^4.8.0
+        version: 4.8.3
+    devDependencies:
+      '@types/node':
+        specifier: ^22.7.0
+        version: 22.20.4
+      typescript:
+        specifier: ^5.6.0
+        version: 5.9.3
+
   packages/server:
     dependencies:
       '@dashwire/core':
-        specifier: ^0.1.0
-        version: 0.1.0
+        specifier: ^0.2.0
+        version: 0.2.0
       '@fastify/static':
         specifier: ^7.0.4
         version: 7.0.4
@@ -122,8 +122,8 @@ packages:
     bundledDependencies:
       - is-unicode-supported
 
-  '@dashwire/core@0.1.0':
-    resolution: {integrity: sha512-YUTFS7xBu1HVDdtN9KYpXudSdW1ibhurL6HIgd0vJ5I8E9BoNLms4FyovF/wk7iBY5pQOKlo3Ak/GXJm3v7PyA==}
+  '@dashwire/core@0.2.0':
+    resolution: {integrity: sha512-TIWMsyPdG1hXNeUUkk1RJ2lZD6L42PBUH5nyY4Drak1PcJjfll5yEOjk7b1fvvONGuj6JB7htuJOPVqt2zIRFw==}
 
   '@drizzle-team/brocli@0.10.2':
     resolution: {integrity: sha512-z33Il7l5dKjUgGULTqBsQBQwckHh5AbIuxhdsIxDDiZAzBOrZO6q9ogcWC65kU382AfynTfgNumVcNIjuIua6w==}
@@ -1409,7 +1409,7 @@ snapshots:
       picocolors: 1.1.1
       sisteransi: 1.0.5
 
-  '@dashwire/core@0.1.0': {}
+  '@dashwire/core@0.2.0': {}
 
   '@drizzle-team/brocli@0.10.2': {}
 
