@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="./.readme/assets/logo.svg" style="max-width: 12rem" />
+<img src="./.github/assets/logo.svg" style="max-width: 12rem" />
 
 <hr /><br />
 
