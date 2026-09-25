@@ -1,6 +1,7 @@
 {
   "name": "@dashwire/server",
-  "version": "0.24.0",
+  "version": "0.25.0",
+  "license": "ISC",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -25,7 +26,7 @@
     "db:migrate": "tsx src/db/migrate.ts"
   },
   "dependencies": {
-    "@dashwire/core": "^0.2.0",
+    "@dashwire/core": "^0.5.0",
     "@fastify/static": "^7.0.4",
     "better-sqlite3": "^11.3.0",
     "drizzle-orm": "^0.33.0",
