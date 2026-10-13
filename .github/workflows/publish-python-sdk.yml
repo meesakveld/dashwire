@@ -1,0 +1,110 @@
+name: Publish Python SDK
+
+# Bump "version" in packages/python-sdk/package.json and push to main. When
+# that version is not on PyPI yet, it is tested, built, published and tagged
+# as python-sdk-v<version>.
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "packages/python-sdk/package.json"
+  workflow_dispatch:
+
+concurrency:
+  group: publish-python-sdk
+  cancel-in-progress: false
+
+defaults:
+  run:
+    working-directory: packages/python-sdk
+
+jobs:
+  plan:
+    name: Check version against PyPI
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.check.outputs.version }}
+      release: ${{ steps.check.outputs.release }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check version
+        id: check
+        run: |
+          VERSION="$(node -p "require('./package.json').version")"
+          STATUS="$(curl -s -o /dev/null -w '%{http_code}' "https://pypi.org/pypi/dashwire/$VERSION/json")"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if [ "$STATUS" = "404" ]; then
+            echo "dashwire $VERSION is new, will be released."
+            echo "release=true" >> "$GITHUB_OUTPUT"
+          elif [ "$STATUS" = "200" ]; then
+            echo "dashwire $VERSION is already on PyPI."
+            echo "release=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Unexpected response from PyPI ($STATUS)."
+            exit 1
+          fi
+
+  build:
+    name: Test and build
+    needs: plan
+    if: needs.plan.outputs.release == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip -e ".[dev]"
+
+      - name: Run tests
+        run: pytest
+
+      - name: Build
+        run: python -m build
+
+      - name: Check distribution
+        run: |
+          python -m twine check dist/*
+          ls dist | grep -q "dashwire-${{ needs.plan.outputs.version }}-" || { echo "Built version does not match package.json"; exit 1; }
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: python-sdk-dist
+          path: packages/python-sdk/dist/
+
+  publish:
+    name: Publish to PyPI
+    needs: [plan, build]
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/dashwire/
+    permissions:
+      contents: write # push the release tag
+      id-token: write # PyPI trusted publishing
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: python-sdk-dist
+          path: packages/python-sdk/dist/
+
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: packages/python-sdk/dist/
+
+      - name: Tag release
+        env:
+          TAG: python-sdk-v${{ needs.plan.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "dashwire (Python) ${{ needs.plan.outputs.version }}"
+          git push origin "$TAG"

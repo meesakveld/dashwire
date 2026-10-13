@@ -1,0 +1,41 @@
+[build-system]
+requires = ["hatchling>=1.21"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dashwire"
+dynamic = ["version"]
+description = "Connect a Python project to a Dashwire control plane."
+readme = "README.md"
+license = { text = "ISC" }
+authors = [{ name = "Mees Akveld" }]
+requires-python = ">=3.9"
+dependencies = [
+  "python-socketio[client]>=5.11,<6",
+  "requests>=2.31",
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: ISC License (ISCL)",
+  "Operating System :: OS Independent",
+  "Typing :: Typed",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "build>=1", "twine>=5"]
+
+[project.urls]
+Repository = "https://github.com/meesakveld/dashwire"
+Source = "https://github.com/meesakveld/dashwire/tree/main/packages/python-sdk"
+
+# The version is kept in package.json, like the npm packages in this repo.
+[tool.hatch.version]
+path = "package.json"
+pattern = '"version":\s*"(?P<version>[^"]+)"'
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dashwire"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

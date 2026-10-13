@@ -1,0 +1,85 @@
+name: Publish npm packages
+
+# Bump "version" in a package's package.json (and package-lock.json, where
+# present) and push to main. Every package whose version is not on npm yet is
+# built, published and tagged as <package>-v<version>.
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "packages/core/package.json"
+      - "packages/sdk/package.json"
+      - "packages/react-ui/package.json"
+      - "packages/server/package.json"
+      - "packages/server/package-lock.json"
+  workflow_dispatch:
+
+concurrency:
+  group: publish-npm
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    name: Find new versions
+    runs-on: ubuntu-latest
+    outputs:
+      releases: ${{ steps.plan.outputs.releases }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Check versions against npm
+        id: plan
+        run: echo "releases=$(node scripts/npm-release-plan.mjs)" >> "$GITHUB_OUTPUT"
+
+  publish:
+    name: Publish ${{ matrix.release.name }}@${{ matrix.release.version }}
+    needs: plan
+    if: needs.plan.outputs.releases != '[]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # push the release tag
+      id-token: write # npm trusted publishing
+    strategy:
+      # One at a time, in dependency order (core first).
+      max-parallel: 1
+      matrix:
+        release: ${{ fromJson(needs.plan.outputs.releases) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          registry-url: "https://registry.npmjs.org"
+
+      # Trusted publishing (OIDC) needs npm 11.5.1 or newer.
+      - name: Update npm
+        run: npm install -g npm@latest
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm --filter "${{ matrix.release.name }}" build
+
+      - name: Publish
+        working-directory: ${{ matrix.release.dir }}
+        run: npm publish --access public
+
+      - name: Tag release
+        env:
+          TAG: ${{ matrix.release.tag }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "${{ matrix.release.name }} ${{ matrix.release.version }}"
+          git push origin "$TAG"

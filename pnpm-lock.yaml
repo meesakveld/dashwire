@@ -34,11 +34,13 @@ importers:
         specifier: ^5.6.0
         version: 5.9.3
 
+  packages/python-sdk: {}
+
   packages/react-ui:
     dependencies:
       '@dashwire/core':
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: ^0.5.0
+        version: 0.5.0
       react:
         specifier: ^18.0.0 || ^19.0.0
         version: 18.3.1
@@ -53,8 +55,8 @@ importers:
   packages/sdk:
     dependencies:
       '@dashwire/core':
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: ^0.5.0
+        version: 0.5.0
       socket.io-client:
         specifier: ^4.8.0
         version: 4.8.3
@@ -69,8 +71,8 @@ importers:
   packages/server:
     dependencies:
       '@dashwire/core':
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: ^0.5.0
+        version: 0.5.0
       '@fastify/static':
         specifier: ^7.0.4
         version: 7.0.4
@@ -122,8 +124,8 @@ packages:
     bundledDependencies:
       - is-unicode-supported
 
-  '@dashwire/core@0.2.0':
-    resolution: {integrity: sha512-TIWMsyPdG1hXNeUUkk1RJ2lZD6L42PBUH5nyY4Drak1PcJjfll5yEOjk7b1fvvONGuj6JB7htuJOPVqt2zIRFw==}
+  '@dashwire/core@0.5.0':
+    resolution: {integrity: sha512-CdNS7Jy9C4N5exL2ET9NeWvfM4AIIpjNlrMNSv4WhxPkIojA7iaRWgvDSuwfLrv61T0eDcwq+W3VDG+17ZhjTw==}
 
   '@drizzle-team/brocli@0.10.2':
     resolution: {integrity: sha512-z33Il7l5dKjUgGULTqBsQBQwckHh5AbIuxhdsIxDDiZAzBOrZO6q9ogcWC65kU382AfynTfgNumVcNIjuIua6w==}
@@ -1409,7 +1411,7 @@ snapshots:
       picocolors: 1.1.1
       sisteransi: 1.0.5
 
-  '@dashwire/core@0.2.0': {}
+  '@dashwire/core@0.5.0': {}
 
   '@drizzle-team/brocli@0.10.2': {}
 

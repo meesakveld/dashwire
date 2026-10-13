@@ -6,11 +6,11 @@
 
 **Connect your projects to a realtime control plane.**
 
-Dashwire is a TypeScript platform and SDK ecosystem for exposing project capabilities through a central dashboard.
+Dashwire is a TypeScript platform and SDK ecosystem for exposing project capabilities through a central dashboard, with SDKs for TypeScript and Python.
 
 <br />
 
-[Installation](#installation) · [Usage](#usage) · [Packages](#npm-packages) · [Contributing](#contributing)
+[Installation](#installation) · [Usage](#usage) · [Packages](#packages) · [Contributing](#contributing)
 
 </div>
 
@@ -18,13 +18,15 @@ Dashwire is a TypeScript platform and SDK ecosystem for exposing project capabil
 
 ## What is Dashwire?
 
-Dashwire gives applications a consistent way to connect their capabilities, state, actions, and logs to a central realtime dashboard. The repository contains the shared domain model, client SDK, React UI components, self-hosted server, and project generator that make up the platform.
+Dashwire gives applications a consistent way to connect their capabilities, state, actions, and logs to a central realtime dashboard. The repository contains the shared domain model, client SDKs for TypeScript and Python, React UI components, self-hosted server, and project generator that make up the platform.
 
 The project is designed for teams that need an operational view across connected applications without building a custom dashboard and realtime integration for every project.
 
 ---
 
-## NPM Packages
+## Packages
+
+### NPM
 
 The following packages are published under the `@dashwire` scope:
 
@@ -34,6 +36,16 @@ The following packages are published under the `@dashwire` scope:
 | [`@dashwire/sdk`](https://www.npmjs.com/package/@dashwire/sdk) | SDK for connecting projects to Dashwire | [![npm downloads](https://img.shields.io/npm/dm/%40dashwire%2Fsdk)](https://www.npmjs.com/package/@dashwire/sdk) |
 | [`@dashwire/react-ui`](https://www.npmjs.com/package/@dashwire/react-ui) | React dashboard and capability controls | [![npm downloads](https://img.shields.io/npm/dm/%40dashwire%2Freact-ui)](https://www.npmjs.com/package/@dashwire/react-ui) |
 | [`@dashwire/server`](https://www.npmjs.com/package/@dashwire/server) | Server, realtime transport, persistence, and dashboard | [![npm downloads](https://img.shields.io/npm/dm/%40dashwire%2Fserver)](https://www.npmjs.com/package/@dashwire/server) |
+
+### PyPI
+
+| Package | Description | Downloads |
+| --- | --- | --- |
+| [`dashwire`](https://pypi.org/project/dashwire/) | Python SDK for connecting projects to Dashwire | [![PyPI downloads](https://img.shields.io/pypi/dm/dashwire)](https://pypi.org/project/dashwire/) |
+
+```bash
+pip install dashwire
+```
 
 The packages are versioned independently and are currently in the `0.x` development phase.
 
@@ -65,6 +77,7 @@ Dashwire centralizes the integration between connected projects and operational 
 - Self-hosted server deployment
 - SQLite-backed persistence for a lightweight starting point
 - TypeScript packages with generated type declarations
+- Python SDK with the same capability model and realtime protocol
 - Monorepo development through pnpm workspaces and Turborepo
 
 ---
@@ -108,7 +121,7 @@ pnpm --filter @dashwire/server dev
 
 The typical Dashwire setup consists of three parts:
 
-1. A project uses `@dashwire/sdk` to connect to a Dashwire server.
+1. A project uses `@dashwire/sdk` (TypeScript) or `dashwire` (Python) to connect to a Dashwire server.
 2. The project exposes capabilities, state, actions, or logs through the shared model.
 3. A dashboard uses the server and `@dashwire/react-ui` to observe and control connected projects.
 
@@ -130,11 +143,34 @@ For local development, the server uses port `4000` by default. Deployment-specif
 packages/
 	core/       Shared platform model
 	sdk/        Client SDK for connected projects
+	python-sdk/ Python SDK for connected projects
 	react-ui/   React dashboard components
 	server/     Server, dashboard, and persistence
 cli/
 	create-dashwire/  Starter-project generator
 ```
+
+---
+
+## Releasing
+
+Releases are driven by the `version` field in each package's `package.json`. Bump it and push to `main`: a workflow compares it with the registry and, when the version is new, builds, publishes and tags the package.
+
+| Package | Version in | Tag | Workflow | Registry |
+| --- | --- | --- | --- | --- |
+| `@dashwire/core` | `packages/core/package.json` | `core-v<version>` | [`publish-npm`](.github/workflows/publish-npm.yml) | npm |
+| `@dashwire/sdk` | `packages/sdk/package.json` | `sdk-v<version>` | [`publish-npm`](.github/workflows/publish-npm.yml) | npm |
+| `@dashwire/react-ui` | `packages/react-ui/package.json` | `react-ui-v<version>` | [`publish-npm`](.github/workflows/publish-npm.yml) | npm |
+| `@dashwire/server` | `packages/server/package.json` | `server-v<version>` | [`publish-npm`](.github/workflows/publish-npm.yml) | npm |
+| `dashwire` (Python) | `packages/python-sdk/package.json` | `python-sdk-v<version>` | [`publish-python-sdk`](.github/workflows/publish-python-sdk.yml) | PyPI |
+
+`@dashwire/server` also has a `package-lock.json`: its `version` and `packages[""].version` must match `package.json`, otherwise the workflow fails. Update them with:
+
+```bash
+cd packages/server && npm install --package-lock-only
+```
+
+Preview which npm packages would be released with `node scripts/npm-release-plan.mjs`.
 
 ---
 

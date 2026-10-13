@@ -1,0 +1,10 @@
+{
+  "name": "@dashwire/python-sdk",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Version and scripts for the dashwire Python SDK (published to PyPI, not npm).",
+  "scripts": {
+    "test": "python3 -m pytest",
+    "dist": "rm -rf dist && python3 -m build && python3 -m twine check dist/*"
+  }
+}
