@@ -1,6 +1,6 @@
 {
   "name": "@dashwire/python-sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Version and scripts for the dashwire Python SDK (published to PyPI, not npm).",
   "scripts": {
