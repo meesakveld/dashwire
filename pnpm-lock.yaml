@@ -71,8 +71,8 @@ importers:
   packages/server:
     dependencies:
       '@dashwire/core':
-        specifier: ^0.5.0
-        version: 0.5.0
+        specifier: ^0.5.1
+        version: 0.5.1
       '@fastify/static':
         specifier: ^7.0.4
         version: 7.0.4
@@ -126,6 +126,9 @@ packages:
 
   '@dashwire/core@0.5.0':
     resolution: {integrity: sha512-CdNS7Jy9C4N5exL2ET9NeWvfM4AIIpjNlrMNSv4WhxPkIojA7iaRWgvDSuwfLrv61T0eDcwq+W3VDG+17ZhjTw==}
+
+  '@dashwire/core@0.5.1':
+    resolution: {integrity: sha512-QIK09p0pWEl19VY7IENhVeguV01y4llFRPmoE9kP5u0tjxtvmcKQei1W2YpZ5+QB9VEebUSTJXlepy5FflFAsQ==}
 
   '@drizzle-team/brocli@0.10.2':
     resolution: {integrity: sha512-z33Il7l5dKjUgGULTqBsQBQwckHh5AbIuxhdsIxDDiZAzBOrZO6q9ogcWC65kU382AfynTfgNumVcNIjuIua6w==}
@@ -1412,6 +1415,8 @@ snapshots:
       sisteransi: 1.0.5
 
   '@dashwire/core@0.5.0': {}
+
+  '@dashwire/core@0.5.1': {}
 
   '@drizzle-team/brocli@0.10.2': {}
 
